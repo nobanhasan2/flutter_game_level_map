@@ -2,6 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:game_level_map/custompaint/mapline_painter1.dart';
+import 'package:game_level_map/utilty/util.dart';
 import 'custompaint/mapline_painter2.dart';
 
 const  divisor = 6;
@@ -28,6 +29,8 @@ class _GameLevelMapState extends State<GameLevelMap>{
   late double stroke;
   late double spaceCurve;
   late List<Widget> levelWidgets;
+  late MapLinePainter1 mapLinePainter1;
+  late MapLinePainter2 mapLinePainter2;
 
   @override
   void initState() {
@@ -40,22 +43,15 @@ class _GameLevelMapState extends State<GameLevelMap>{
     levelWidgets = widget.levelWidgets;
 
     levelWidgets = levelWidgets.reversed.toList();
+    mapLinePainter1 = MapLinePainter1(color,stroke);
+    mapLinePainter2 = MapLinePainter2(color,stroke);
 
-   for(int i=0;i<levelWidgets.length;i+=2){
-       List<Widget> pair = [];
-       var widget1 = levelWidgets[i];
-       pair.add(widget1);
-
-       if(i < levelWidgets.length-1){
-         var widget2 = levelWidgets[i+1];
-         pair.add(widget2);
-       }
-       paired.add(pair);
-
-    }
+     paired = pairLevel(levelWidgets);
     _goToCurrentLevel();
 
   }
+
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -68,7 +64,7 @@ class _GameLevelMapState extends State<GameLevelMap>{
             children: [
               CustomPaint(
                 size: Size(MediaQuery.of(context).size.width,spaceCurve),
-                painter: index %2 == 0 ? MapLinePainter1(color,stroke) : MapLinePainter2(color,stroke),
+                painter: index %2 == 0 ? mapLinePainter1 : mapLinePainter2,
               ),
               Positioned(
                   left: index % 2 ==0 ? 100 : null ,
